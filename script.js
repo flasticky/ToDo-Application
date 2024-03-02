@@ -46,7 +46,7 @@ let categories = [
     },
     {
         title: "Fitness",
-        img: "dumbbell.png",
+        img: "fitness.png",
     },
     {
         title: "Education",
@@ -211,3 +211,176 @@ let tasks = [
         completed: false,
     },
 ];
+
+let selectedCategory = categories[0];
+
+const categoriesContainer = document.querySelector(".categories");
+const categoryTitle = document.querySelector(".category-title");
+const totalCategoryTasks = document.querySelector(".category-tasks");
+const categoryImg = document.querySelector("#category-img");
+const totalTasks = document.querySelector(".totalTasks");
+
+const calculateTotal = () => {
+    const categoryTasks = tasks.filter((task) => task.category.toLowerCase() === selectedCategory.title.toLowerCase());
+    totalCategoryTasks.innerHTML = `${categoryTasks.length} Tasks`;
+    totalTasks.innerHTML = tasks.length;
+};
+
+const renderCategories = () => {
+    categoriesContainer.innerHTML = "";
+    categories.forEach((category) => {
+        const categoryTasks = tasks.filter((task) => task.category.toLowerCase() === category.title.toLowerCase());
+
+        const div = document.createElement("div");
+        div.classList.add("category");
+        div.addEventListener("click", () => {
+            wrapper.classList.toggle("show-category");
+            selectedCategory = category;
+            categoryTitle.innerHTML = category.title;
+            categoryImg.src = `images/${category.img}`;
+            calculateTotal();
+            renderTasks();
+        });
+        div.innerHTML = `
+        <div class="left">
+            <img src="images/${category.img}" alt="${category.title}"/>
+            <div class="content">
+                <h1>${category.title}</h1>
+                <p>${categoryTasks.length} Tasks</p>
+            </div>
+        </div>
+        <div class="options">
+            <div class="toggle-btn">
+                <svg fill="#000000" width="20px" height="20px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M144,192a16,16,0,1,1-16-16A16.01833,16.01833,0,0,1,144,192ZM128,80a16,16,0,1,0-16-16A16.01833,16.01833,0,0,0,128,80Zm0,32a16,16,0,1,0,16,16A16.01833,16.01833,0,0,0,128,112Z"/>
+                </svg>
+            </div>
+        </div>
+        `;
+
+        categoriesContainer.appendChild(div);
+    });
+};
+
+const tasksContainer = document.querySelector(".tasks");
+const renderTasks = () => {
+    tasksContainer.innerHTML = "";
+    const categoryTasks = tasks.filter(
+        (task) =>
+            task.category.toLowerCase() === selectedCategory.title.toLowerCase()
+    );
+
+    if (categoryTasks.length === 0)
+    {
+        tasksContainer.innerHTML = `
+        <p class="no-tasks">No tasks added for this category.</p>
+        `;
+    }
+    else
+    {
+        categoryTasks.forEach((task) => {
+            const div = document.createElement("div");
+            div.classList.add("task-wrapper");
+            const label = document.createElement("label");
+            label.classList.add("task");
+            label.setAttribute("for", task.id);
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = task.id;
+            checkbox.checked = task.completed;
+
+            // add completetion functionality on click checkbox
+            checkbox.addEventListener("change", () => {
+                const index = tasks.findIndex((t) => t.id === task.id);
+                tasks[index].completed =! tasks[index].completed;
+                saveLocal();
+            });
+
+            div.innerHTML = `
+                <div class="delete">
+                    <svg width="18px" height="18px" viewBox="0 0 1024 1024" class="icon" xmlns="http://www.w3.org/2000/svg"><path fill="#000000" d="M160 256H96a32 32 0 010-64h256V95.936a32 32 0 0132-32h256a32 32 0 0132 32V192h256a32 32 0 110 64h-64v672a32 32 0 01-32 32H192a32 32 0 01-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 01-32-32V416a32 32 0 0164 0v320a32 32 0 01-32 32zm192 0a32 32 0 01-32-32V416a32 32 0 0164 0v320a32 32 0 01-32 32z"/></svg>
+                </div>
+            `;
+
+            label.innerHTML = `
+                <span class="checkmark">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6"></svg>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"></path>
+                </span>
+                <p>${task.task}</p>
+            `;
+
+            label.prepend(checkbox);
+            div.prepend(label);
+            tasksContainer.appendChild(div);
+
+            const deleteBtn = div.querySelector(".delete");
+            deleteBtn.addEventListener("click", () => {
+                const index = tasks.findIndex((t) => t.id === task.id);
+                tasks.splice(index, 1);
+                saveLocal();
+                renderTasks();
+            })
+        });
+
+        renderCategories();
+        calculateTotal();
+    }
+};
+
+// Save and get tasks from local storage
+const saveLocal = () => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+};
+
+const getLocal = () => {
+    const localTasks = JSON.parse(localStorage.getItem("tasks"));
+
+    if (localTasks)
+    {
+        tasks = localTasks;
+    }
+};
+
+// Add task
+const categorySelect = document.querySelector("#category-select");
+const cancelBtn = document.querySelector(".cancel-btn");
+const addBtn = document.querySelector(".add-btn");
+
+const taskInput = document.querySelector("#task-input");
+
+cancelBtn.addEventListener("click", toggleAddTaskForm);
+
+addBtn.addEventListener("click", () => {
+    const task = taskInput.value;
+    const category = categorySelect.value;
+
+    if ((task === ""))
+    {
+        alert("Please enter a task");
+    }
+    else
+    {
+        const newTask = {
+            id : tasks.length + 1,
+            task,
+            category,
+            completed: false,
+        };
+        tasks.push(newTask);
+        taskInput.value = "";
+        saveLocal();
+        toggleAddTaskForm();
+        renderTasks();
+    }
+});
+categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.title.toLowerCase();
+    option.textContent = category.title;
+    categorySelect.appendChild(option);
+})
+
+getLocal();
+calculateTotal();
+renderTasks();

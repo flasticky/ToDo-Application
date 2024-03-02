@@ -7,7 +7,7 @@
     <title>ToDo App</title>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="wrapper show-category">
         <div class="screen-backdrop"></div>
         <div class="screen home-screen">
             <div class="head-wrapper">
@@ -16,7 +16,7 @@
                 <div class="welcome">
                     <div class="content">
                         <h1>Hello :)</h1>
-                        <p>Today you have 5 tasks</p>
+                        <p>Today you have <span class="totalTasks">5</span> tasks</p>
                     </div>
                     <div class="img">
                         <div class="backdrop"></div>
@@ -63,8 +63,8 @@
             <div class="category-details">
                 <img src="./images/boy.png" alt="" id="category-img">
                 <div class="details">
-                    <p>8 tasks</p>
-                    <h1>Personal</h1>
+                    <p class="category-tasks">8 tasks</p>
+                    <h1 class="category-title">Personal</h1>
                 </div>
             </div>
             <div class="task-wrapper">
@@ -79,7 +79,8 @@
                             <p>Buy a new car</p>
                         </label>
                         <div class="delete">
-                            <svg width="18px" height="18px" viewBox="0 0 1024 1024" class="icon" xmlns="http://www.w3.org/2000/svg"><path fill="#000000" d="M160 256H96a32 32 0 010-64h256V95.936a32 32 0 0132-32h256a32 32 0 0132 32V192h256a32 32 0 110 64h-64v672a32 32 0 01-32 32H192a32 32 0 01-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 01-32-32V416a32 32 0 0164 0v320a32 32 0 01-32 32zm192 0a32 32 0 01-32-32V416a32 32 0 0164 0v320a32 32 0 01-32 32z"/></svg>                        </div>
+                            <svg width="18px" height="18px" viewBox="0 0 1024 1024" class="icon" xmlns="http://www.w3.org/2000/svg"><path fill="#000000" d="M160 256H96a32 32 0 010-64h256V95.936a32 32 0 0132-32h256a32 32 0 0132 32V192h256a32 32 0 110 64h-64v672a32 32 0 01-32 32H192a32 32 0 01-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 01-32-32V416a32 32 0 0164 0v320a32 32 0 01-32 32zm192 0a32 32 0 01-32-32V416a32 32 0 0164 0v320a32 32 0 01-32 32z"/></svg>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -106,7 +107,6 @@
             <div class="input-group">
                 <label for="category-select">Category</label>
                 <select name="" id="category-select">
-                    <option value="personal">Personal</option>
                 </select>
             </div>
             <div class="btns">

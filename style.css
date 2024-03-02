@@ -255,6 +255,15 @@ body
     overflow: auto;
 }
 
+.no-tasks
+{
+    margin-top: 5rem;
+    text-align: center;
+    font-size: 1.5rem;
+    opacity: 0.6;
+    padding-left: 30px;
+}
+
 .tasks
 {
     padding-top: 1rem;
@@ -456,6 +465,7 @@ body
 
 .btns button
 {
+    z-index: 2;
     padding: 10px 20px;
     border-radius: 5px;
     border: none;
